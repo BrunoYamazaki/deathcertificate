@@ -40,9 +40,9 @@ class PatientRepository {
     });
   }
 
-  delete(cpf) {
+  delete(id) {
     return new Promise((resolve) => {
-      patients = patients.filter((patient) => patient.cpf !== cpf);
+      patients = patients.filter((patient) => patient.id !== id);
       resolve();
     });
   }
