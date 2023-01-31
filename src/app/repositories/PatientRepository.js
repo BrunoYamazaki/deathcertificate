@@ -2,21 +2,19 @@ const { v4 } = require('uuid');
 
 let patients = [
   {
-    id: v4(),
     name: 'Gabriel',
+    cpf: '999.000.111-33',
     disease: 'none',
-    deatCause: 'shots',
-    deathTime: '35 days',
-    category: 'external cause',
+    deathCause: 'shots',
+    date: '35 days',
     category_id: v4(),
   },
   {
-    id: v4(),
     name: 'Castro',
+    cpf: '922.330.121-34',
     disease: 'high blood pressure',
-    deatCause: 'hearth attack',
-    deathTime: 'unknown',
-    category: 'natural cause',
+    deathCause: 'hearth attack',
+    date: 'unknown',
     category_id: v4(),
   },
 ];
@@ -28,16 +26,33 @@ class PatientRepository {
     });
   }
 
-  findById(id) {
+  findByCpf(cpf) {
     return new Promise((resolve) => {
-      resolve(patients.find((patient) => patient.id === id));
+      resolve(patients.find((patient) => patient.cpf === cpf));
     });
   }
 
-  delete(id) {
+  delete(cpf) {
     return new Promise((resolve) => {
-      patients = patients.filter((patient) => patient.id !== id);
+      patients = patients.filter((patient) => patient.cpf !== cpf);
       resolve();
+    });
+  }
+
+  create({
+    cpf, name, disease, deathCause, date, category_id,
+  }) {
+    return new Promise((resolve) => {
+      const newPatient = {
+        name,
+        cpf,
+        disease,
+        deathCause,
+        date,
+        category_id,
+      };
+      patients.push(newPatient);
+      resolve(newPatient);
     });
   }
 }

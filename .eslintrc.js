@@ -13,5 +13,9 @@ module.exports = {
   rules: {
     'class-methods-use-this': 'off',
     'consistent-return': 'off',
+    // i disable
+    'no-useless-escape': 'off',
+    'import/prefer-default-export': 'off',
+    camelcase: 'off',
   },
 };

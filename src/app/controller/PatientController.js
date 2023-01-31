@@ -1,4 +1,5 @@
 const PatientRepository = require('../repositories/PatientRepository');
+const isCpfValid = require('../../utils/isValidCpf');
 
 class PatientController {
   async index(request, response) {
@@ -21,8 +22,31 @@ class PatientController {
     response.json(patient);
   }
 
-  store() {
+  async store(request, response) {
     // Criar novo registro
+    const {
+      name, cpf, disease, deathCause, date, category_id,
+    } = request.body;
+
+    if (!isCpfValid(cpf)) {
+      return response.status(400).json({ error: 'cpf is invalid' });
+    }
+
+    if (!name || !cpf) {
+      return response.status(400).json({ error: 'name or cpf is required' });
+    }
+
+    const patientExists = await PatientRepository.findByCpf(cpf);
+
+    if (patientExists) {
+      return response.status(400).json({ error: 'this cpf has already been registered' });
+    }
+
+    const patient = await PatientRepository.create({
+      name, cpf, disease, deathCause, date, category_id,
+    });
+
+    response.json(patient);
   }
 
   update() {
