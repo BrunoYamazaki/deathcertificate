@@ -28,16 +28,15 @@ class PatientController {
       name, cpf, disease, deathCause, date, category_id,
     } = request.body;
 
-    if (!isCpfValid(cpf)) {
-      return response.status(400).json({ error: 'cpf is invalid' });
-    }
-
     if (!name || !cpf) {
       return response.status(400).json({ error: 'name or cpf is required' });
     }
 
-    const patientExists = await PatientRepository.findByCpf(cpf);
+    if (!isCpfValid(cpf)) {
+      return response.status(400).json({ error: 'cpf is invalid' });
+    }
 
+    const patientExists = await PatientRepository.findByCpf(cpf);
     if (patientExists) {
       return response.status(400).json({ error: 'this cpf has already been registered' });
     }
@@ -49,8 +48,35 @@ class PatientController {
     response.json(patient);
   }
 
-  update() {
-    // Editar um registro
+  async update(request, response) {
+    const { id } = request.params;
+    const {
+      name, cpf, disease, deathCause, date, category_id,
+    } = request.body;
+
+    if (!name || !cpf) {
+      return response.status(400).json({ error: 'name or cpf is required' });
+    }
+
+    if (!isCpfValid(cpf)) {
+      return response.status(400).json({ error: 'cpf is invalid' });
+    }
+
+    const patientExists = await PatientRepository.findById(id);
+    if (!patientExists) {
+      return response.status(404).json({ error: 'Patient not found' });
+    }
+
+    const patientByCpf = await PatientRepository.findByCpf(cpf);
+    if (patientByCpf && patientByCpf.id !== id) {
+      return response.status(400).json({ error: 'this cpf has already been registered' });
+    }
+
+    const patient = await PatientRepository.update(id, {
+      name, cpf, disease, deathCause, date, category_id,
+    });
+
+    response.json(patient);
   }
 
   async delete(request, response) {
